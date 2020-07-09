@@ -1,0 +1,25 @@
+import pandas
+from pymysql import Connect, cursors
+from pandas import DataFrame
+
+
+def get_conn():
+    return Connect(host='localhost', user='root', password='stevenwilson8#', db='chembl_26', autocommit=True)
+
+
+def read_file():
+    fd = open('compounds.sql', 'r')
+    sqlfile = fd.read()
+    fd.close()
+    conn = get_conn()
+    with conn.cursor() as cur:
+        try:
+            cur.execute(sqlfile)
+        except Exception as e:
+            print(e)
+            with open('error_log.txt', 'a') as _f:
+                _f.write('\n{}\n'.format(sqlfile))
+
+
+if __name__ == "__main__":
+    read_file()
